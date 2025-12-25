@@ -1,10 +1,8 @@
-package slogtrace
+package mylogger
 
 import (
 	"context"
 	"log/slog"
-
-	"github.com/gladinov/mylogger/trace"
 )
 
 type TraceHandler struct {
@@ -20,7 +18,7 @@ func (h *TraceHandler) Enabled(ctx context.Context, level slog.Level) bool {
 }
 
 func (h *TraceHandler) Handle(ctx context.Context, r slog.Record) error {
-	if traceID, ok := trace.TraceIDFromContext(ctx); ok {
+	if traceID, ok := TraceIDFromContext(ctx); ok {
 		r.AddAttrs(slog.String("trace_id", traceID))
 	}
 	return h.next.Handle(ctx, r)

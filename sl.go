@@ -1,10 +1,8 @@
-package sl
+package mylogger
 
 import (
 	"log/slog"
 	"os"
-
-	"github.com/gladinov/mylogger/slogtrace"
 )
 
 const (
@@ -23,22 +21,22 @@ func NewLogger(env string) *slog.Logger {
 	case envLocal:
 		level = slog.LevelDebug
 		base := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: level})
-		handler = slogtrace.New(base)
+		handler = New(base)
 
 	case envDev:
 		level = slog.LevelDebug
 		base := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: level})
-		handler = slogtrace.New(base)
+		handler = New(base)
 
 	case envProd:
 		level = slog.LevelInfo
 		base := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: level})
-		handler = slogtrace.New(base)
+		handler = New(base)
 
 	default:
 		level = slog.LevelInfo
 		base := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: level})
-		handler = slogtrace.New(base)
+		handler = New(base)
 
 	}
 	return slog.New(handler)
