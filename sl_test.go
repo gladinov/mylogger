@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"log/slog"
 	"testing"
+
+	trace "github.com/gladinov/contracts/trace"
 )
 
 func TestTraceHandler_AddsTraceID(t *testing.T) {
@@ -17,7 +19,7 @@ func TestTraceHandler_AddsTraceID(t *testing.T) {
 	handler := New(base)
 	logger := slog.New(handler)
 
-	ctx := WithTraceID(context.Background(), "trace-123")
+	ctx := trace.WithTraceID(context.Background(), "trace-123")
 
 	logger.InfoContext(ctx, "hello")
 
@@ -62,7 +64,7 @@ func TestTraceHandler_WithAttrs(t *testing.T) {
 		slog.String("service", "test"),
 	)
 
-	ctx := WithTraceID(context.Background(), "trace-456")
+	ctx := trace.WithTraceID(context.Background(), "trace-456")
 	logger.InfoContext(ctx, "hello")
 
 	var record map[string]any
