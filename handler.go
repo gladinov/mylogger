@@ -3,31 +3,33 @@ package mylogger
 import (
 	"context"
 	"log/slog"
+
+	trace "github.com/gladinov/contracts/trace"
 )
 
-type TraceHandler struct {
+type traceHandler struct {
 	next slog.Handler
 }
 
-func New(next slog.Handler) *TraceHandler {
-	return &TraceHandler{next: next}
+func New(next slog.Handler) *traceHandler {
+	return &traceHandler{next: next}
 }
 
-func (h *TraceHandler) Enabled(ctx context.Context, level slog.Level) bool {
+func (h *traceHandler) Enabled(ctx context.Context, level slog.Level) bool {
 	return h.next.Enabled(ctx, level)
 }
 
-func (h *TraceHandler) Handle(ctx context.Context, r slog.Record) error {
-	if traceID, ok := TraceIDFromContext(ctx); ok {
+func (h *traceHandler) Handle(ctx context.Context, r slog.Record) error {
+	if traceID, ok := trace.TraceIDFromContext(ctx); ok {
 		r.AddAttrs(slog.String("trace_id", traceID))
 	}
 	return h.next.Handle(ctx, r)
 }
 
-func (h *TraceHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
-	return &TraceHandler{next: h.next.WithAttrs(attrs)}
+func (h *traceHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
+	return &traceHandler{next: h.next.WithAttrs(attrs)}
 }
 
-func (h *TraceHandler) WithGroup(name string) slog.Handler {
-	return &TraceHandler{next: h.next.WithGroup(name)}
+func (h *traceHandler) WithGroup(name string) slog.Handler {
+	return &traceHandler{next: h.next.WithGroup(name)}
 }
